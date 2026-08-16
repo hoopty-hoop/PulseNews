@@ -1,0 +1,1576 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pulse — Intelligence Suite</title>
+
+<style>
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+:root {
+    --bg: #f8f9fb;
+    --card: #ffffff;
+    --card2: #f1f3f6;
+    --border: #e2e6eb;
+    --text: #13151a;
+    --muted: #646f7d;
+    --accent: #2f4eff;
+    --accent-glow: rgba(47, 78, 255, 0.15);
+}
+
+body.dark-mode {
+    --bg: #0b0d12;
+    --card: #131720;
+    --card2: #1a1f2c;
+    --border: #2a3243;
+    --text: #f0f4f8;
+    --muted: #8c96a7;
+    --accent-glow: rgba(47, 78, 255, 0.25);
+}
+
+body {
+    font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    padding-bottom: 50px;
+    transition: background 0.3s ease, color 0.3s ease;
+}
+
+button {
+    font: inherit;
+    cursor: pointer;
+}
+
+button:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+/* =========================
+   NAVBAR
+========================= */
+nav {
+    height: 70px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 0 6%;
+    position: sticky;
+    top: 0;
+    background: var(--card);
+    backdrop-filter: blur(16px);
+    z-index: 10;
+}
+
+.logo {
+    font-size: 20px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.mark {
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    background: var(--accent);
+    color: white;
+    display: grid;
+    place-items: center;
+    font-weight: 800;
+    font-size: 14px;
+}
+
+.nav-search {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    max-width: 380px;
+    flex: 1;
+    background: var(--card2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 4px 6px;
+}
+
+.nav-search span {
+    color: var(--muted);
+    font-size: 18px;
+    padding-left: 7px;
+}
+
+.nav-search input {
+    border: 0;
+    background: transparent;
+    outline: 0;
+    flex: 1;
+    padding: 6px;
+    color: var(--text);
+    font-size: 13px;
+}
+
+.nav-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-left: auto;
+}
+
+.icon-btn {
+    border: 1px solid var(--border);
+    background: var(--card);
+    color: var(--text);
+    padding: 7px 12px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.icon-btn:hover {
+    background: var(--card2);
+}
+
+.pro-badge {
+    border: 0;
+    background: linear-gradient(135deg, #2f4eff, #7c3aed);
+    color: white;
+    padding: 7px 14px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+/* =========================
+   MAIN LAYOUT
+========================= */
+.wrap {
+    width: min(1140px, 92%);
+    margin: auto;
+}
+
+.hero {
+    padding: 30px 0 10px;
+}
+
+h1 {
+    font-size: clamp(26px, 4vw, 40px);
+    letter-spacing: -1px;
+    line-height: 1.2;
+    max-width: 700px;
+    font-weight: 700;
+}
+
+.hero p {
+    color: var(--muted);
+    margin-top: 10px;
+    line-height: 1.5;
+    max-width: 600px;
+    font-size: 14px;
+}
+
+/* =========================
+   SEARCH BAR
+========================= */
+.search {
+    display: flex;
+    align-items: center;
+    max-width: 700px;
+    margin-top: 20px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 4px 8px;
+}
+
+.search input {
+    flex: 1;
+    background: transparent;
+    border: 0;
+    outline: 0;
+    color: var(--text);
+    padding: 10px 10px;
+    font-size: 14px;
+}
+
+.clear-search-btn {
+    background: transparent;
+    border: none;
+    color: var(--muted);
+    font-size: 16px;
+    padding: 0 8px;
+    cursor: pointer;
+    display: none;
+}
+
+.clear-search-btn:hover {
+    color: var(--text);
+}
+
+/* =========================
+   TOOLBARS & CHIPS
+========================= */
+.source-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    overflow-x: auto;
+    padding: 16px 0 6px;
+    white-space: nowrap;
+}
+
+.source-toolbar-label {
+    font-size: 12px;
+    color: var(--muted);
+    font-weight: 600;
+    margin-right: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.filter-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 0 12px;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.chips {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    flex: 1;
+    padding-bottom: 2px;
+}
+
+.chip {
+    white-space: nowrap;
+    background: var(--card);
+    border: 1px solid var(--border);
+    color: var(--muted);
+    border-radius: 8px;
+    padding: 6px 12px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 500;
+    transition: 0.15s ease;
+}
+
+.chip:hover {
+    border-color: var(--accent);
+}
+
+.chip.active {
+    color: var(--bg);
+    border-color: var(--text);
+    background: var(--text);
+}
+
+.bar-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.secondary-action {
+    white-space: nowrap;
+    background: var(--card);
+    border: 1px solid var(--border);
+    color: var(--text);
+    border-radius: 8px;
+    padding: 6px 12px;
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.secondary-action:hover {
+    background: var(--card2);
+}
+
+.pro-action-btn {
+    background: linear-gradient(135deg, rgba(47, 78, 255, 0.1), rgba(124, 58, 237, 0.1));
+    border-color: var(--accent);
+    color: var(--accent);
+    font-weight: 600;
+}
+
+/* =========================
+   GRID & STORIES
+========================= */
+.grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 300px;
+    gap: 24px;
+    padding-bottom: 40px;
+}
+
+.title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 14px;
+}
+
+.title h2 {
+    font-size: 17px;
+    font-weight: 600;
+}
+
+.updated {
+    font-size: 12px;
+    color: var(--muted);
+}
+
+.story {
+    display: grid;
+    grid-template-columns: 180px 1fr;
+    gap: 18px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px;
+    margin-bottom: 12px;
+    transition: 0.15s ease;
+}
+
+.story:hover {
+    border-color: var(--muted);
+}
+
+.story img {
+    width: 180px;
+    height: 130px;
+    object-fit: cover;
+    border-radius: 8px;
+    background: var(--card2);
+}
+
+.avatar {
+    width: 180px;
+    height: 130px;
+    border-radius: 8px;
+    display: grid;
+    place-items: center;
+    color: white;
+    font-size: 36px;
+    font-weight: 700;
+    font-family: Georgia, serif;
+}
+
+.story h3 {
+    font-size: 16px;
+    line-height: 1.3;
+    font-weight: 600;
+}
+
+.desc {
+    color: var(--muted);
+    font-size: 13px;
+    line-height: 1.45;
+    margin-top: 5px;
+}
+
+.meta {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    align-items: center;
+    margin-top: 10px;
+}
+
+.source-pill {
+    font-size: 11px;
+    color: var(--text);
+    border: 1px solid var(--border);
+    background: var(--card2);
+    padding: 3px 7px;
+    border-radius: 5px;
+    font-weight: 500;
+}
+
+.multi-badge {
+    background: var(--accent-glow);
+    color: var(--accent);
+    border-color: var(--accent);
+}
+
+.sentiment-pill {
+    font-size: 10px;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+.sentiment-neutral { background: rgba(100, 111, 125, 0.15); color: var(--muted); }
+.sentiment-critical { background: rgba(239, 68, 68, 0.15); color: #ef4444; }
+.sentiment-positive { background: rgba(16, 185, 129, 0.15); color: #10b981; }
+
+.footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid var(--border);
+    margin-top: 12px;
+    padding-top: 10px;
+    font-size: 11px;
+    color: var(--muted);
+}
+
+.actions-group {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.sources-btn {
+    background: var(--card2);
+    color: var(--text);
+    border: 1px solid var(--border);
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 11px;
+}
+
+.sources-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+}
+
+.bookmark-btn {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    padding: 4px 7px;
+    border-radius: 6px;
+    font-size: 11px;
+}
+
+.bookmark-btn.saved {
+    color: #f59e0b;
+    border-color: #f59e0b;
+}
+
+.reader-btn {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    padding: 4px 7px;
+    border-radius: 6px;
+    font-size: 11px;
+}
+.reader-btn:hover {
+    color: var(--text);
+    border-color: var(--text);
+}
+
+.read {
+    color: var(--accent);
+    font-weight: 600;
+}
+
+/* =========================
+   SIDEBAR & WIDGETS
+========================= */
+.sidecard {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 14px;
+}
+
+.sidecard h3 {
+    font-size: 14px;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-weight: 600;
+}
+
+.weather {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.temp {
+    font-size: 28px;
+    font-weight: 700;
+}
+
+.small {
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.5;
+}
+
+.wx-source {
+    margin-top: 10px;
+    font-size: 11px;
+    color: var(--muted);
+    opacity: 0.8;
+}
+
+.empty {
+    padding: 30px;
+    text-align: center;
+    color: var(--muted);
+    border: 1px dashed var(--border);
+    border-radius: 12px;
+    background: var(--card);
+    font-size: 13px;
+}
+
+/* =========================
+   MODALS
+========================= */
+.modal-backdrop {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(10, 12, 16, 0.5);
+    z-index: 20;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    backdrop-filter: blur(4px);
+}
+
+.modal {
+    width: min(500px, 100%);
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 22px;
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.2);
+    max-height: 85vh;
+    overflow-y: auto;
+}
+
+.modal h2 {
+    font-size: 18px;
+    margin-bottom: 6px;
+    font-weight: 600;
+}
+
+.modal p {
+    color: var(--muted);
+    font-size: 13px;
+    line-height: 1.5;
+    margin-bottom: 14px;
+}
+
+.modal input, .modal select {
+    width: 100%;
+    padding: 10px;
+    margin: 0 0 10px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    outline: 0;
+    background: var(--card2);
+    color: var(--text);
+    font-size: 13px;
+}
+
+.modal .primary {
+    width: 100%;
+    border: 0;
+    background: var(--text);
+    color: var(--bg);
+    padding: 10px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 13px;
+}
+
+.close {
+    float: right;
+    border: 0;
+    background: transparent;
+    font-size: 20px;
+    color: var(--muted);
+    cursor: pointer;
+}
+
+.source-link-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--card2);
+    border: 1px solid var(--border);
+    padding: 10px 12px;
+    border-radius: 8px;
+    margin-bottom: 6px;
+}
+
+.source-link-item span {
+    font-weight: 500;
+    font-size: 13px;
+}
+
+.source-link-item a {
+    background: var(--accent);
+    color: white;
+    padding: 5px 10px;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.teams-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 14px;
+}
+
+.team-chip-select {
+    border: 1px solid var(--border);
+    padding: 9px;
+    border-radius: 8px;
+    background: var(--card2);
+    font-size: 13px;
+    cursor: pointer;
+    text-align: center;
+    font-weight: 500;
+}
+
+.team-chip-select.selected {
+    background: var(--accent);
+    color: white;
+    border-color: var(--accent);
+}
+
+.theme-options {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+    margin-bottom: 14px;
+}
+
+.theme-swatch {
+    height: 36px;
+    border-radius: 8px;
+    border: 2px solid var(--border);
+    cursor: pointer;
+}
+
+.coming-soon-banner {
+    background: rgba(245, 158, 11, 0.12);
+    border: 1px solid #f59e0b;
+    color: #f59e0b;
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 600;
+    margin-bottom: 14px;
+    text-align: center;
+}
+
+@media (max-width: 850px) {
+    .grid { grid-template-columns: 1fr; }
+    .story { grid-template-columns: 130px 1fr; }
+    .story img, .avatar { width: 130px; height: 110px; }
+}
+
+@media (max-width: 760px) {
+    nav { padding: 0 4%; gap: 10px; }
+    .nav-search { display: none; }
+    .nav-actions { margin-left: auto; }
+}
+</style>
+</head>
+
+<body class="dark-mode">
+
+<!-- =========================
+     NAVIGATION
+========================= -->
+<nav>
+    <div class="logo">
+        <div class="mark">P</div>
+        Pulse
+    </div>
+
+    <div class="nav-search">
+        <span>⌕</span>
+        <input id="navQ" placeholder="Search stories..." oninput="syncAndSearch(this.value)">
+    </div>
+
+    <div class="nav-actions">
+        <button class="icon-btn" onclick="openSportsModal()">Teams</button>
+        <button class="icon-btn" onclick="openPreferencesModal()">Settings</button>
+        <button class="pro-badge" onclick="openProPaywallModal()">👑 Pro</button>
+    </div>
+</nav>
+
+<main class="wrap">
+
+<!-- =========================
+     HERO SECTION
+========================= -->
+<section class="hero">
+    <h1>Latest aggregated news and dispatches.</h1>
+    <p>
+        Unified reporting with automatic story grouping, sentiment tracking, and clean reader mode.
+    </p>
+
+    <div class="search">
+        <span style="color:var(--muted); padding-left:4px; font-size:16px;">⌕</span>
+        <input id="q" placeholder="Explore stories, sources, or topics instantly..." oninput="handleSearchInput(this.value)">
+        <button id="clearSearchBtn" class="clear-search-btn" onclick="clearSearchInput()">×</button>
+    </div>
+</section>
+
+<!-- =========================
+     SOURCES TOOLBAR
+========================= -->
+<div class="source-toolbar">
+    <span class="source-toolbar-label">Source:</span>
+    <div class="chip source-chip active" onclick="filterBySource('all', this)">All Sources</div>
+    <div class="chip source-chip" onclick="filterBySource('Google News', this)">Google News</div>
+    <div class="chip source-chip" onclick="filterBySource('BBC World', this)">BBC World</div>
+    <div class="chip source-chip" onclick="filterBySource('NPR News', this)">NPR News</div>
+    <div class="chip source-chip" onclick="filterBySource('CNBC', this)">CNBC</div>
+    <div class="chip source-chip" onclick="filterBySource('TechCrunch', this)">TechCrunch</div>
+    <div class="chip source-chip" onclick="filterBySource('The Verge', this)">The Verge</div>
+    <div class="chip source-chip" onclick="filterBySource('Wired', this)">Wired</div>
+    <div class="chip source-chip" onclick="filterBySource('CNN', this)">CNN</div>
+    <div class="chip source-chip" onclick="filterBySource('Reuters', this)">Reuters</div>
+    <div class="chip source-chip" onclick="filterBySource('Associated Press', this)">Associated Press</div>
+    <div class="chip source-chip" onclick="filterBySource('Bloomberg', this)">Bloomberg</div>
+    <div class="chip source-chip" onclick="filterBySource('ESPN', this)">ESPN</div>
+    <div class="chip source-chip" onclick="filterBySource('Yahoo! Sports', this)">Yahoo! Sports</div>
+    <div class="chip source-chip" onclick="filterBySource('Bleacher Report', this)">Bleacher Report</div>
+    <div class="chip source-chip" onclick="filterBySource('Fox Sports', this)">Fox Sports</div>
+    <div class="chip source-chip" onclick="filterBySource('CBS Sports', this)">CBS Sports</div>
+    <div class="chip source-chip" onclick="filterBySource('saved', this)">Saved</div>
+</div>
+
+<!-- =========================
+     SECTIONS FILTER BAR
+========================= -->
+<div class="filter-bar">
+    <div class="chips" id="sectionContainer">
+        <div class="chip section-chip active" onclick="filterBySection('Top', this)">Top</div>
+        <div class="chip section-chip" onclick="filterBySection('National Events', this)">National Events</div>
+        <div class="chip section-chip" onclick="filterBySection('Global Affairs', this)">Global Affairs</div>
+        <div class="chip section-chip" onclick="filterBySection('Money', this)">Money</div>
+        <div class="chip section-chip" onclick="filterBySection('Local Updates', this)">Local Updates</div>
+        <div class="chip section-chip" onclick="filterBySection('Sports', this)">Sports</div>
+        <div class="chip section-chip" onclick="filterBySection('Science', this)">Science</div>
+        <div class="chip section-chip" onclick="filterBySection('Lifestyle', this)">Lifestyle</div>
+    </div>
+    <div class="bar-actions">
+        <button class="secondary-action pro-action-btn" onclick="openProPaywallModal()">✨ AI Executive Briefing</button>
+        <button class="secondary-action" onclick="fetchAllLiveNews()">Refresh</button>
+    </div>
+</div>
+
+<!-- =========================
+     SPORTS SUB-DIVISIONS BAR (DYNAMIC)
+========================= -->
+<div class="source-toolbar" id="sportsSubBar" style="display: none; padding-top: 0; padding-bottom: 12px;">
+    <span class="source-toolbar-label">League:</span>
+    <div class="chip sports-league-chip active" onclick="filterBySportsLeague('all', this)">All Leagues</div>
+    <div class="chip sports-league-chip" onclick="filterBySportsLeague('NBA', this)">NBA</div>
+    <div class="chip sports-league-chip" onclick="filterBySportsLeague('NFL', this)">NFL</div>
+    <div class="chip sports-league-chip" onclick="filterBySportsLeague('WNBA', this)">WNBA</div>
+    <div class="chip sports-league-chip" onclick="filterBySportsLeague('Soccer', this)">Soccer</div>
+    <div class="chip sports-league-chip" onclick="filterBySportsLeague('Formula 1', this)">Formula 1</div>
+</div>
+
+<!-- =========================
+     MAIN GRID
+========================= -->
+<div class="grid">
+
+<section>
+    <!-- HARD NEWS DISPATCHES -->
+    <div class="title">
+        <h2 id="heading">Live Dispatches</h2>
+        <span class="updated" id="status">Syncing...</span>
+    </div>
+    <div id="stories"></div>
+
+    <!-- PERSPECTIVES & FEATURES SECTION -->
+    <div id="featuresSection" style="margin-top: 35px;">
+        <div class="title">
+            <h2>Perspectives & Features</h2>
+            <span class="updated">Essays, interviews & culture</span>
+        </div>
+        <div id="featuresStories"></div>
+    </div>
+</section>
+
+<!-- =========================
+     SIDEBAR
+========================= -->
+<aside>
+    <!-- PRO CUSTOM FEEDS WIDGET -->
+    <div class="sidecard" style="border-color: var(--accent);">
+        <h3>Custom Feeds <span style="font-size:10px; background:linear-gradient(135deg, #2f4eff, #7c3aed); color:white; padding:2px 6px; border-radius:4px;">PRO</span></h3>
+        <div class="small" style="margin-bottom: 10px;">
+            Add and monitor personal RSS feeds.
+        </div>
+        <button class="secondary-action pro-action-btn" style="width:100%; text-align:center;" onclick="openProPaywallModal()">+ Add Custom Feed</button>
+    </div>
+
+    <!-- SPORTS FOLLOW WIDGET -->
+    <div class="sidecard">
+        <h3>Tracked Teams</h3>
+        <div class="small" id="sidebarTeamsList" style="margin-bottom: 10px;">
+            No teams selected.
+        </div>
+        <button class="secondary-action" style="width:100%; text-align:center;" onclick="openSportsModal()">Manage Teams</button>
+    </div>
+
+    <!-- WEATHER -->
+    <div class="sidecard">
+        <h3>Weather</h3>
+        <div class="weather">
+            <div>
+                <div class="temp" id="wxTemp">72°</div>
+                <div class="small" id="wxCond">Clear</div>
+            </div>
+            <div class="small" id="wxDetails">
+                Today<br>High 79° · Low 58°
+            </div>
+        </div>
+        <div class="wx-source" id="wxSource">
+            Open-Meteo
+        </div>
+    </div>
+</aside>
+
+</div>
+</main>
+
+<!-- =========================
+     MODALS
+========================= -->
+<!-- SIGN-UP / WELCOME MODAL -->
+<div class="modal-backdrop" id="signupModal" style="display: flex;">
+    <div class="modal" style="border: 2px solid var(--accent);">
+        <button class="close" onclick="closeSignupModal()">×</button>
+        <h2>Welcome to Pulse</h2>
+        <p>Set up your account to customize your feed, save bookmarks, and sync preferences across devices.</p>
+        
+        <input type="text" id="signupName" placeholder="Your Name...">
+        <input type="email" id="signupEmail" placeholder="Your Email Address...">
+        
+        <div style="display: flex; gap: 10px; margin-top: 10px;">
+            <button class="secondary-action" style="flex: 1; text-align: center;" onclick="closeSignupModal()">Cancel / Skip</button>
+            <button class="primary" style="flex: 1;" onclick="completeSignup()">Get Started</button>
+        </div>
+    </div>
+</div>
+
+<div class="modal-backdrop" id="sourcesModal">
+    <div class="modal">
+        <button class="close" onclick="closeSourcesModal()">×</button>
+        <h2 id="sourcesModalTitle">Source Directory</h2>
+        <p id="sourcesModalSubtitle">Select original coverage links from verified agencies:</p>
+        
+        <div id="sourcesDirectoryList" style="margin-top: 12px;"></div>
+
+        <div style="margin-top: 16px;">
+            <button class="primary" onclick="closeSourcesModal()">Close</button>
+        </div>
+    </div>
+</div>
+
+<!-- DISTRACTION-FREE READER MODAL -->
+<div class="modal-backdrop" id="readerModal">
+    <div class="modal" style="width: min(650px, 100%);">
+        <button class="close" onclick="closeReaderModal()">×</button>
+        <div id="readerMeta" style="font-size: 12px; color: var(--muted); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px;"></div>
+        <h2 id="readerTitle" style="font-size: 22px; line-height: 1.3; margin-bottom: 14px;"></h2>
+        <div id="readerBody" style="font-size: 15px; line-height: 1.7; color: var(--text); margin-bottom: 20px;"></div>
+        <div style="display: flex; gap: 10px;">
+            <a id="readerOriginalLink" href="#" target="_blank" rel="noopener" class="secondary-action" style="flex: 1; text-align: center;">Open Original Source →</a>
+            <button class="primary" style="flex: 1;" onclick="closeReaderModal()">Close</button>
+        </div>
+    </div>
+</div>
+
+<div class="modal-backdrop" id="sportsModal">
+    <div class="modal">
+        <button class="close" onclick="closeSportsModal()">×</button>
+        <h2>Select Teams</h2>
+        <p>Pick teams and leagues to follow.</p>
+        
+        <div class="teams-grid" id="teamsSelectorGrid">
+            <div class="team-chip-select" onclick="toggleTeam(this, 'Premier League')">⚽ Premier League</div>
+            <div class="team-chip-select" onclick="toggleTeam(this, 'NBA')">🏀 NBA</div>
+            <div class="team-chip-select" onclick="toggleTeam(this, 'NFL')">🏈 NFL</div>
+            <div class="team-chip-select" onclick="toggleTeam(this, 'Formula 1')">🏎️ Formula 1</div>
+        </div>
+
+        <button class="primary" onclick="saveSportsTeams()">Save</button>
+    </div>
+</div>
+
+<div class="modal-backdrop" id="preferencesModal">
+    <div class="modal">
+        <button class="close" onclick="closePreferencesModal()">×</button>
+        <h2>Settings</h2>
+        <p>Accent theme:</p>
+        
+        <div class="theme-options">
+            <div class="theme-swatch" style="background: #2f4eff;" onclick="setAccent('#2f4eff')"></div>
+            <div class="theme-swatch" style="background: #10b981;" onclick="setAccent('#10b981')"></div>
+            <div class="theme-swatch" style="background: #f59e0b;" onclick="setAccent('#f59e0b')"></div>
+            <div class="theme-swatch" style="background: #ec4899;" onclick="setAccent('#ec4899')"></div>
+        </div>
+
+        <p>Display Mode:</p>
+        <button class="secondary-action" style="width:100%; text-align:center; margin-bottom:12px;" onclick="toggleDarkMode()">Toggle Dark Mode</button>
+
+        <button class="primary" onclick="closePreferencesModal()">Save</button>
+    </div>
+</div>
+
+<!-- PRO PAYWALL MODAL -->
+<div class="modal-backdrop" id="proPaywallModal">
+    <div class="modal" style="border: 2px solid var(--accent);">
+        <button class="close" onclick="closeProPaywallModal()">×</button>
+        <div class="coming-soon-banner">🚀 Pulse Pro is currently in Private Beta & Not Available Yet</div>
+        <h2>Unlock Pulse Pro</h2>
+        <p>Get advanced intelligence tools, real-time AI executive briefings, custom RSS parsing, and unfiltered multi-agency global wire streams.</p>
+        
+        <div style="background: var(--card2); border: 1px solid var(--border); border-radius: 10px; padding: 14px; margin-bottom: 16px;">
+            <div style="font-weight: 600; font-size: 14px; margin-bottom: 6px;">Pro Feature Package:</div>
+            <ul style="color: var(--muted); font-size: 13px; padding-left: 18px; line-height: 1.6;">
+                <li>Instant AI Synthesis & Daily Executive Briefings</li>
+                <li>Unlimited Custom RSS & API Feed Integration</li>
+                <li>Advanced Sentiment Spike Tracking & Alerts</li>
+            </ul>
+        </div>
+
+        <input type="email" placeholder="Enter your email for early access..." disabled style="opacity: 0.7;">
+        <button class="primary" style="background: linear-gradient(135deg, #2f4eff, #7c3aed);" onclick="alert('Thank you! Early access waitlist sign-ups will open soon.')">Join Early Access Waitlist</button>
+    </div>
+</div>
+
+<script>
+let currentStories = [];
+let followedTeams = [];
+let currentSourceFilter = 'all';
+let currentSectionFilter = 'Top';
+let currentSportsLeagueFilter = 'all';
+let searchQuery = '';
+
+const RSS_FEEDS = [
+    { name: "Google News", group: "Google News", url: "https://news.google.com/rss?hl=en-US&gl=US&ceid=US:en" },
+    { name: "BBC World", group: "BBC World", url: "https://feeds.bbci.co.uk/news/world/rss.xml" },
+    { name: "NPR News", group: "NPR News", url: "https://www.npr.org/rss/rss.php?id=1001" },
+    { name: "CNBC Business", group: "CNBC", url: "https://www.cnbc.com/id/15839069/device/rss/rss.html" },
+    { name: "TechCrunch", group: "TechCrunch", url: "https://techcrunch.com/feed/" },
+    { name: "The Verge", group: "The Verge", url: "https://www.theverge.com/rss/index.xml" },
+    { name: "Wired", group: "Wired", url: "https://www.wired.com/feed/rss" },
+    { name: "CNN Top Stories", group: "CNN", url: "http://rss.cnn.com/rss/cnn_topstories.rss" },
+    { name: "Reuters World", group: "Reuters", url: "https://news.google.com/rss/search?q=site:reuters.com&hl=en-US&gl=US&ceid=US:en" },
+    { name: "Associated Press", group: "Associated Press", url: "https://news.google.com/rss/search?q=site:apnews.com&hl=en-US&gl=US&ceid=US:en" },
+    { name: "Bloomberg Markets", group: "Bloomberg", url: "https://news.google.com/rss/search?q=site:bloomberg.com&hl=en-US&gl=US&ceid=US:en" },
+    { name: "ESPN Top News", group: "ESPN", url: "https://www.espn.com/espn/rss/news" },
+    { name: "Yahoo! Sports", group: "Yahoo! Sports", url: "https://sports.yahoo.com/rss/" },
+    { name: "Bleacher Report", group: "Bleacher Report", url: "https://bleacherreport.com/articles/feed" },
+    { name: "Fox Sports", group: "Fox Sports", url: "https://www.foxsports.com/rss" },
+    { name: "CBS Sports", group: "CBS Sports", url: "https://www.cbssports.com/rss/headlines/" }
+];
+
+function stripHtmlTags(html) {
+    let tmp = document.createElement("DIV");
+    tmp.innerHTML = html;
+    return tmp.textContent || tmp.innerText || "";
+}
+
+function timeAgo(dateString) {
+    const date = new Date(dateString);
+    const now = new Date();
+    const diffHours = Math.floor((now - date) / (1000 * 60 * 60));
+    if (isNaN(diffHours) || diffHours < 1) return "Just now";
+    if (diffHours < 24) return `${diffHours}h ago`;
+    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+}
+
+function getSentiment(story) {
+    const text = (story.title + " " + story.summary).toLowerCase();
+    if (text.includes('crisis') || text.includes('conflict') || text.includes('warn') || text.includes('attack') || text.includes('drop') || text.includes('death') || text.includes('probe')) {
+        return { label: 'Critical', class: 'sentiment-critical' };
+    }
+    if (text.includes('surge') || text.includes('gain') || text.includes('success') || text.includes('accord') || text.includes('breakthrough') || text.includes('win')) {
+        return { label: 'Positive', class: 'sentiment-positive' };
+    }
+    return { label: 'Neutral', class: 'sentiment-neutral' };
+}
+
+function isFeatureStory(story) {
+    const t = story.title.toLowerCase();
+    const d = story.summary.toLowerCase();
+    return t.startsWith('i ') || 
+           t.startsWith('my ') || 
+           t.includes(' says ') || 
+           d.includes('writes ') || 
+           d.includes('opinion') || 
+           d.includes('feature');
+}
+
+function getStorySection(story) {
+    const text = (story.title + " " + story.summary).toLowerCase();
+    
+    if (story.sourceGroup === 'BBC World') return 'Global Affairs';
+    if (story.sourceGroup === 'NPR News') return 'National Events';
+    if (['CNBC', 'Bloomberg'].includes(story.sourceGroup)) return 'Money';
+    if (story.sourceGroup === 'TechCrunch' || story.sourceGroup === 'The Verge') return 'Science';
+    if (story.sourceGroup === 'Wired') return 'Lifestyle';
+    if (['ESPN', 'Yahoo! Sports', 'Bleacher Report', 'Fox Sports', 'CBS Sports'].includes(story.sourceGroup) || text.includes('sport') || text.includes('match') || text.includes('game') || text.includes('team') || text.includes('league') || text.includes('player') || text.includes('race') || text.includes('championship') || text.includes('nba') || text.includes('nfl') || text.includes('wnba') || text.includes('soccer')) {
+        return 'Sports';
+    }
+    if (text.includes('money') || text.includes('economy') || text.includes('market') || text.includes('stocks') || text.includes('inflation') || text.includes('finance') || text.includes('business') || text.includes('bank') || text.includes('trade')) {
+        return 'Money';
+    }
+    if (text.includes('science') || text.includes('space') || text.includes('tech') || text.includes('technology') || text.includes('research') || text.includes('study') || text.includes('nasa') || text.includes('discovery') || text.includes('ai')) {
+        return 'Science';
+    }
+    if (text.includes('lifestyle') || text.includes('culture') || text.includes('food') || text.includes('travel') || text.includes('art') || text.includes('fashion') || text.includes('health') || text.includes('entertainment') || text.includes('movie') || text.includes('music')) {
+        return 'Lifestyle';
+    }
+    if (text.includes('local') || text.includes('domestic') || text.includes('regional') || text.includes('community') || text.includes('city') || text.includes('state')) {
+        return 'Local Updates';
+    }
+    if (text.includes('global') || text.includes('international') || text.includes('foreign') || text.includes('world') || text.includes('diplomacy') || text.includes('treaty') || text.includes('un') || text.includes('nato')) {
+        return 'Global Affairs';
+    }
+    if (text.includes('national') || text.includes('federal') || text.includes('election') || text.includes('government') || text.includes('president') || text.includes('congress') || text.includes('parliament') || text.includes('policy')) {
+        return 'National Events';
+    }
+    return 'Top';
+}
+
+function getSportsLeague(story) {
+    const text = (story.title + " " + story.summary).toLowerCase();
+    if (text.includes('nba') || text.includes('basketball') || text.includes('lebron') || text.includes('curry') || text.includes('hoops')) return 'NBA';
+    if (text.includes('nfl') || text.includes('football') || text.includes('quarterback') || text.includes('touchdown') || text.includes('super bowl')) return 'NFL';
+    if (text.includes('wnba')) return 'WNBA';
+    if (text.includes('soccer') || text.includes('fc') || text.includes('premier league') || text.includes('la liga') || text.includes('mls') || text.includes('champions league') || text.includes('goal')) return 'Soccer';
+    if (text.includes('f1') || text.includes('formula 1') || text.includes('grand prix') || text.includes('verstappen') || text.includes('hamilton')) return 'Formula 1';
+    return 'General Sports';
+}
+
+function clusterSimilarStories(rawStories) {
+    const stopWords = new Set(['a', 'an', 'the', 'and', 'or', 'but', 'in', 'on', 'at', 'to', 'for', 'with', 'by', 'of', 'from', 'as', 'is', 'was', 'are', 'were', 'be', 'this', 'that', 'its', 'has', 'have', 'analysis']);
+    let clusters = [];
+
+    rawStories.forEach(story => {
+        let cleanTitle = story.title.toLowerCase()
+            .replace(/'s\b/g, '')
+            .replace(/[^\w\s]/gi, '');
+        
+        let titleTokens = cleanTitle.split(/\s+/)
+            .filter(w => w.length > 2 && !stopWords.has(w));
+        
+        let matchedCluster = null;
+
+        for (let cluster of clusters) {
+            let intersection = titleTokens.filter(token => cluster.tokens.has(token));
+            if (intersection.length >= 2) {
+                matchedCluster = cluster;
+                break;
+            }
+        }
+
+        if (matchedCluster) {
+            if (!matchedCluster.sources.includes(story.sourceName)) {
+                matchedCluster.sources.push(story.sourceName);
+                matchedCluster.sourceGroups.push(story.sourceGroup);
+                matchedCluster.sourceLinks.push(story.link);
+            }
+        } else {
+            let tempStory = {
+                sourceGroups: [story.sourceGroup],
+                sources: [story.sourceName],
+                title: story.title,
+                img: story.img,
+                summary: story.summary,
+                sourceLinks: [story.link],
+                time: story.time,
+                tokens: new Set(titleTokens)
+            };
+            tempStory.section = getStorySection(tempStory);
+            clusters.push(tempStory);
+        }
+    });
+
+    clusters.sort((a, b) => b.sources.length - a.sources.length);
+    return clusters;
+}
+
+async function fetchAllLiveNews() {
+    setStatus("Loading...");
+    let rawStories = [];
+
+    try {
+        const promises = RSS_FEEDS.map(async feed => {
+            try {
+                const apiUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(feed.url)}`;
+                const res = await fetch(apiUrl);
+                const data = await res.json();
+                if (data.status === "ok" && data.items) {
+                    return data.items.map(item => ({
+                        sourceGroup: feed.group,
+                        sourceName: feed.name,
+                        title: item.title,
+                        img: item.thumbnail || (item.enclosure ? item.enclosure.link : null) || null,
+                        summary: stripHtmlTags(item.description).substring(0, 140) + "...",
+                        link: item.link,
+                        time: timeAgo(item.pubDate)
+                    }));
+                }
+            } catch (e) {
+                console.error(`Failed: ${feed.name}`, e);
+            }
+            return [];
+        });
+
+        const results = await Promise.all(promises);
+        results.forEach(stories => {
+            rawStories = rawStories.concat(stories);
+        });
+
+        if (rawStories.length > 0) {
+            currentStories = clusterSimilarStories(rawStories);
+            applyFiltersAndRender();
+            setStatus(`${currentStories.length} reports`);
+        } else {
+            throw new Error("No items returned");
+        }
+    } catch (error) {
+        console.error("Fetch error:", error);
+        setStatus("Error loading feeds");
+        document.getElementById("stories").innerHTML = `
+            <div class="empty">
+                Could not load live feeds. Click Refresh to try again.
+            </div>
+        `;
+    }
+}
+
+function escapeHtml(str) {
+    return String(str ?? "").replace(/[&<>"']/g, char => ({
+        "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+    }[char]));
+}
+
+function colorFromString(str) {
+    let hash = 0;
+    for (let i = 0; i < str.length; i++) {
+        hash = str.charCodeAt(i) + ((hash << 5) - hash);
+    }
+    return `hsl(${Math.abs(hash) % 360}, 40%, 40%)`;
+}
+
+function setStatus(text) {
+    document.getElementById("status").textContent = text;
+}
+
+function setHeading(text) {
+    document.getElementById("heading").textContent = text;
+}
+
+function getSavedBookmarks() {
+    try {
+        return JSON.parse(localStorage.getItem("pulseBookmarks") || "[]");
+    } catch (e) {
+        return [];
+    }
+}
+
+function toggleBookmark(title) {
+    let bookmarks = getSavedBookmarks();
+    if (bookmarks.includes(title)) {
+        bookmarks = bookmarks.filter(b => b !== title);
+    } else {
+        bookmarks.push(title);
+    }
+    localStorage.setItem("pulseBookmarks", JSON.stringify(bookmarks));
+    applyFiltersAndRender();
+}
+
+function setAccent(color) {
+    document.documentElement.style.setProperty('--accent', color);
+    localStorage.setItem("pulseAccent", color);
+}
+
+function toggleDarkMode() {
+    document.body.classList.toggle("dark-mode");
+    localStorage.setItem("pulseDarkMode", document.body.classList.contains("dark-mode"));
+}
+
+function closeSignupModal() {
+    document.getElementById("signupModal").style.display = "none";
+    localStorage.setItem("pulseSignedUp", "true");
+}
+
+function completeSignup() {
+    const name = document.getElementById("signupName").value.trim();
+    if (name) {
+        localStorage.setItem("pulseUserName", name);
+    }
+    closeSignupModal();
+}
+
+function openProPaywallModal() {
+    document.getElementById("proPaywallModal").style.display = "flex";
+}
+
+function closeProPaywallModal() {
+    document.getElementById("proPaywallModal").style.display = "none";
+}
+
+function openReaderModal(title) {
+    const story = currentStories.find(s => s.title === title);
+    if (!story) return;
+
+    document.getElementById("readerMeta").textContent = `${story.sources.join(" • ")} — ${story.time}`;
+    document.getElementById("readerTitle").textContent = story.title;
+    document.getElementById("readerBody").textContent = story.summary + " Full unedited reporting is accessible via the original source links or multi-source network archive.";
+    document.getElementById("readerOriginalLink").href = story.sourceLinks[0] || '#';
+    document.getElementById("readerModal").style.display = "flex";
+}
+
+function closeReaderModal() {
+    document.getElementById("readerModal").style.display = "none";
+}
+
+function renderStoryCard(story) {
+    const media = story.img
+        ? `<img src="${story.img}" alt="${escapeHtml(story.title)}" onerror="this.onerror=null;this.src='https://placehold.co/180x130/e9ecf0/646f7d?text=News';">`
+        : `<div class="avatar" style="background:${colorFromString(story.title)}">
+               ${escapeHtml(story.title.charAt(0).toUpperCase())}
+           </div>`;
+
+    const sourceCount = story.sources.length;
+    const sourcesPillsHtml = story.sources.map(src => `<span class="source-pill">${escapeHtml(src)}</span>`).join("");
+    const bookmarks = getSavedBookmarks();
+    const isBookmarked = bookmarks.includes(story.title);
+    const primaryLink = story.sourceLinks[0] || '#';
+    const sentiment = getSentiment(story);
+
+    return `
+        <article class="story">
+            ${media}
+            <div>
+                <h3>${escapeHtml(story.title)}</h3>
+                <p class="desc">${escapeHtml(story.summary)}</p>
+                <div class="meta">
+                    ${sourcesPillsHtml}
+                    ${sourceCount > 1 ? `<span class="source-pill multi-badge">${sourceCount} Sources</span>` : ''}
+                    <span class="sentiment-pill ${sentiment.class}">${sentiment.label}</span>
+                </div>
+                <div class="footer">
+                    <span>${story.time}</span>
+                    <div class="actions-group">
+                        <button class="bookmark-btn ${isBookmarked ? 'saved' : ''}" data-action="save" data-title="${escapeHtml(story.title)}">
+                            ${isBookmarked ? 'Saved' : 'Save'}
+                        </button>
+                        <button class="reader-btn" data-action="reader" data-title="${escapeHtml(story.title)}">
+                            Reader View
+                        </button>
+                        <button class="sources-btn" data-action="sources" data-title="${escapeHtml(story.title)}">
+                            Sources (${sourceCount})
+                        </button>
+                        <a class="read" href="${primaryLink}" target="_blank" rel="noopener">
+                            Read →
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </article>
+    `;
+}
+
+// Event Delegation for story card buttons to ensure foolproof clicks
+document.addEventListener('click', (e) => {
+    const btn = e.target.closest('button[data-action]');
+    if (!btn) return;
+    const action = btn.getAttribute('data-action');
+    const title = btn.getAttribute('data-title');
+
+    if (action === 'save') {
+        toggleBookmark(title);
+    } else if (action === 'reader') {
+        openReaderModal(title);
+    } else if (action === 'sources') {
+        openSourcesDirectory(title);
+    }
+});
+
+function applyFiltersAndRender() {
+    let items = currentStories;
+    const bookmarks = getSavedBookmarks();
+
+    if (searchQuery) {
+        const lowerQ = searchQuery.toLowerCase();
+        items = items.filter(s => 
+            s.title.toLowerCase().includes(lowerQ) || 
+            s.summary.toLowerCase().includes(lowerQ) ||
+            s.sources.some(src => src.toLowerCase().includes(lowerQ))
+        );
+        setHeading(`Results for "${searchQuery}"`);
+    } else {
+        setHeading(currentSectionFilter === 'Top' ? 'Live Dispatches' : `Section: ${currentSectionFilter}`);
+    }
+
+    if (!searchQuery) {
+        if (currentSourceFilter === 'saved') {
+            items = items.filter(s => bookmarks.includes(s.title));
+        } else if (currentSourceFilter !== 'all') {
+            items = items.filter(s => s.sourceGroups.includes(currentSourceFilter));
+        }
+
+        if (currentSectionFilter !== 'Top') {
+            items = items.filter(s => s.section === currentSectionFilter);
+            
+            if (currentSectionFilter === 'Sports' && currentSportsLeagueFilter !== 'all') {
+                items = items.filter(s => getSportsLeague(s) === currentSportsLeagueFilter);
+            }
+        }
+    }
+
+    const storiesEl = document.getElementById("stories");
+    const featuresEl = document.getElementById("featuresStories");
+    const featuresSectionEl = document.getElementById("featuresSection");
+
+    if (!items.length) {
+        storiesEl.innerHTML = `
+            <div class="empty">
+                No stories found matching your selected filters or search query.
+            </div>
+        `;
+        featuresSectionEl.style.display = "none";
+        return;
+    }
+
+    const hardNews = items.filter(s => !isFeatureStory(s));
+    const features = items.filter(s => isFeatureStory(s));
+
+    if (hardNews.length > 0) {
+        storiesEl.innerHTML = hardNews.map(story => renderStoryCard(story)).join("");
+    } else {
+        storiesEl.innerHTML = `<div class="empty">No live dispatches found.</div>`;
+    }
+
+    if (features.length > 0 && currentSourceFilter !== 'saved' && !searchQuery) {
+        featuresSectionEl.style.display = "block";
+        featuresEl.innerHTML = features.map(story => renderStoryCard(story)).join("");
+    } else {
+        featuresSectionEl.style.display = "none";
+    }
+}
+
+function filterBySource(sourceName, button) {
+    document.querySelectorAll(".source-chip").forEach(chip => chip.classList.remove("active"));
+    if (button) button.classList.add("active");
+    currentSourceFilter = sourceName;
+    applyFiltersAndRender();
+}
+
+function filterBySection(sectionName, button) {
+    document.querySelectorAll(".section-chip").forEach(chip => chip.classList.remove("active"));
+    if (button) button.classList.add("active");
+    currentSectionFilter = sectionName;
+    currentSportsLeagueFilter = 'all';
+
+    const sportsSubBar = document.getElementById("sportsSubBar");
+    if (sectionName === 'Sports') {
+        sportsSubBar.style.display = "flex";
+        document.querySelectorAll(".sports-league-chip").forEach((c, idx) => {
+            if (idx === 0) c.classList.add("active");
+            else c.classList.remove("active");
+        });
+    } else {
+        sportsSubBar.style.display = "none";
+    }
+
+    applyFiltersAndRender();
+}
+
+function filterBySportsLeague(leagueName, button) {
+    document.querySelectorAll(".sports-league-chip").forEach(chip => chip.classList.remove("active"));
+    if (button) button.classList.add("active");
+    currentSportsLeagueFilter = leagueName;
+    applyFiltersAndRender();
+}
+
+function openSourcesDirectory(title) {
+    const story = currentStories.find(s => s.title === title);
+    if (!story) return;
+
+    document.getElementById("sourcesModalTitle").textContent = story.title;
+    document.getElementById("sourcesModalSubtitle").textContent = `Available across ${story.sources.length} sources:`;
+    
+    const listEl = document.getElementById("sourcesDirectoryList");
+    listEl.innerHTML = story.sources.map((srcName, i) => {
+        const linkUrl = story.sourceLinks[i] || '#';
+        return `
+            <div class="source-link-item">
+                <span>${escapeHtml(srcName)}</span>
+                <a href="${linkUrl}" target="_blank" rel="noopener">Open →</a>
+            </div>
+        `;
+    }).join("");
+
+    document.getElementById("sourcesModal").style.display = "flex";
+}
+
+function closeSourcesModal() {
+    document.getElementById("sourcesModal").style.display = "none";
+}
+
+function handleSearchInput(value) {
+    searchQuery = value.trim();
+    const clearBtn = document.getElementById("clearSearchBtn");
+    const navInput = document.getElementById("navQ");
+    
+    if (navInput.value !== value) {
+        navInput.value = value;
+    }
+
+    if (searchQuery.length > 0) {
+        clearBtn.style.display = "block";
+    } else {
+        clearBtn.style.display = "none";
+    }
+
+    applyFiltersAndRender();
+}
+
+function syncAndSearch(value) {
+    const mainInput = document.getElementById("q");
+    if (mainInput.value !== value) {
+        mainInput.value = value;
+    }
+    handleSearchInput(value);
+}
+
+function clearSearchInput() {
+    document.getElementById("q").value = "";
+    document.getElementById("navQ").value = "";
+    document.getElementById("clearSearchBtn").style.display = "none";
+    searchQuery = "";
+    applyFiltersAndRender();
+}
+
+function loadFollowedTeams() {
+    try {
+        followedTeams = JSON.parse(localStorage.getItem("pulseTeams") || "[]");
+        const listEl = document.getElementById("sidebarTeamsList");
+        if (followedTeams.length > 0) {
+            listEl.innerHTML = followedTeams.map(t => `<span class="source-pill" style="display:inline-block; margin:2px;">${t}</span>`).join("");
+        } else {
+            listEl.innerHTML = `No teams selected.`;
+        }
+    } catch (e) {}
+}
+
+function openSportsModal() {
+    document.getElementById("sportsModal").style.display = "flex";
+    document.querySelectorAll(".team-chip-select").forEach(chip => {
+        const teamName = chip.textContent.replace(/^[⚽🏀🏈🏎️]\s*/, "");
+        if (followedTeams.includes(teamName)) {
+            chip.classList.add("selected");
+        } else {
+            chip.classList.remove("selected");
+        }
+    });
+}
+
+function closeSportsModal() {
+    document.getElementById("sportsModal").style.display = "none";
+}
+
+function toggleTeam(el, teamName) {
+    el.classList.toggle("selected");
+}
+
+function saveSportsTeams() {
+    const selected = document.querySelectorAll(".team-chip-select.selected");
+    followedTeams = Array.from(selected).map(el => el.textContent.replace(/^[⚽🏀🏈🏎️]\s*/, ""));
+    localStorage.setItem("pulseTeams", JSON.stringify(followedTeams));
+    closeSportsModal();
+    loadFollowedTeams();
+}
+
+function openPreferencesModal() {
+    document.getElementById("preferencesModal").style.display = "flex";
+}
+
+function closePreferencesModal() {
+    document.getElementById("preferencesModal").style.display = "none";
+}
+
+async function loadWeather(lat, lon, label) {
+    try {
+        const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true&daily=temperature_2m_max,temperature_2m_min&temperature_unit=fahrenheit&timezone=auto`;
+        const res = await fetch(url);
+        const json = await res.json();
+        const current = json.current_weather;
+        
+        document.getElementById("wxTemp").textContent = Math.round(current.temperature) + "°";
+        const high = Math.round(json.daily.temperature_2m_max[0]);
+        const low = Math.round(json.daily.temperature_2m_min[0]);
+        document.getElementById("wxDetails").innerHTML = `Today<br>High ${high}° · Low ${low}°`;
+        document.getElementById("wxSource").textContent = label;
+    } catch (err) {
+        document.getElementById("wxSource").textContent = "Active";
+    }
+}
+
+function initWeather() {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+            pos => loadWeather(pos.coords.latitude, pos.coords.longitude, "Local"),
+            () => loadWeather(37.7749, -122.4194, "San Francisco"),
+            { timeout: 5000 }
+        );
+    } else {
+        loadWeather(37.7749, -122.4194, "San Francisco");
+    }
+}
+
+if (localStorage.getItem("pulseAccent")) {
+    setAccent(localStorage.getItem("pulseAccent"));
+}
+if (localStorage.getItem("pulseDarkMode") === "false") {
+    document.body.classList.remove("dark-mode");
+}
+if (localStorage.getItem("pulseSignedUp") === "true") {
+    document.getElementById("signupModal").style.display = "none";
+}
+
+loadFollowedTeams();
+fetchAllLiveNews();
+initWeather();
+</script>
+</body>
+</html>
